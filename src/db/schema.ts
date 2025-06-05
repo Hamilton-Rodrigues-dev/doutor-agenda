@@ -23,7 +23,7 @@ export const usersTable = pgTable("users", {
 });
 
 export const userTableRelations = relations(usersTable, ({ many }) => ({
-  usertoClinics: many(userToClinicsTable),
+  usertoClinics: many(usersToClinicsTable),
 }));
 
 export const sessionsTable = pgTable("sessions", {
@@ -67,7 +67,7 @@ export const verificationsTable = pgTable("verifications", {
 });
 
 ///Tabela intermediária para n-n
-export const userToClinicsTable = pgTable("user_to_clinics", {
+export const usersToClinicsTable = pgTable("user_to_clinics", {
   clinicId: uuid("clinic_id")
     .notNull()
     .references(() => clinicsTable.id, { onDelete: "cascade" }),
@@ -93,18 +93,18 @@ export const clinicTableRelations = relations(clinicsTable, ({ many }) => ({
   doctors: many(doctorsTable),
   pacients: many(patientsTable),
   appointments: many(appointmentsTable),
-  userToClinics: many(userToClinicsTable),
+  userToClinics: many(usersToClinicsTable),
 }));
 
 export const userToClinicsTableRelations = relations(
-  userToClinicsTable,
+  usersToClinicsTable,
   ({ one }) => ({
     user: one(usersTable, {
-      fields: [userToClinicsTable.userId],
+      fields: [usersToClinicsTable.userId],
       references: [usersTable.id],
     }),
     clinic: one(clinicsTable, {
-      fields: [userToClinicsTable.clinicId],
+      fields: [usersToClinicsTable.clinicId],
       references: [clinicsTable.id],
     }),
   }),
