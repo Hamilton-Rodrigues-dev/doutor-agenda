@@ -26,7 +26,7 @@ export const userTableRelations = relations(usersTable, ({ many }) => ({
   usertoClinics: many(userToClinicsTable),
 }));
 
-export const sessionTable = pgTable("sessions", {
+export const sessionsTable = pgTable("sessions", {
   id: text("id").primaryKey(),
   expiresAt: timestamp("expires_at").notNull(),
   token: text("token").notNull().unique(),

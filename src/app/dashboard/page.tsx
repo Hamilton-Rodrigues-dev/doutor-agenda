@@ -1,5 +1,5 @@
 const DashboardPage = () => {
-  return alert("Deu certo");
+  return <div>{"chegou no dashboard"}</div>;
 };
 
 export default DashboardPage;
