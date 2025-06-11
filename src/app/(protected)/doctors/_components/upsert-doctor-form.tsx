@@ -381,7 +381,8 @@ const UpsertDoctorForm = ({ doctor, onSuccess }: UpsertDoctorFormProps) => {
                       <SelectItem value="22:30:00">22:30</SelectItem>
                       <SelectItem value="23:00:00">23:00</SelectItem>
                       <SelectItem value="23:30:00">23:30</SelectItem>
-                    </SelectGroup>
+                    </SelectGroup>git push --force --tags origin main
+
                   </SelectContent>
                 </Select>
               </FormItem>
