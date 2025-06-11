@@ -119,8 +119,8 @@ export const doctorsTable = pgTable("doctors", {
   avatarImageUrl: text("avatar_image_url"),
   specialty: text("specialty").notNull(),
   ///One - Monday, Two - Tuesday, Three - Wednesday, Four - Thursday, Five - Friday, Six - Saturday, zero - Sunday
-  availableFromWeekDay: integer("available_from_week_day").notNull(), ///1
-  availableToWeekDay: integer("available_to_week_day").notNull(), ///5
+  availableFromWeekDay: integer("available_from_week_day").notNull(),
+  availableToWeekDay: integer("available_to_week_day").notNull(),
   availableFromTime: time("available_from_time").notNull(),
   availableToTime: time("available_to_time").notNull(),
   appointmentPriceInCents: integer("appointment_price_in_cents").notNull(), //Salvar em centavos e dividir por 100
