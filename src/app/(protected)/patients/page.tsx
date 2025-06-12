@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { DataTable } from "@/components/ui/data-table";
 import {
   PageActions,
   PageContainer,
@@ -16,7 +17,7 @@ import { patientsTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
 import AddPatientButton from "./_components/add-patient-button";
-import PatientCard from "./_components/patient-card";
+import { patientTableColumns } from "./_components/table-colums";
 
 const PatientsPage = async () => {
   const session = await auth.api.getSession({
@@ -40,7 +41,9 @@ const PatientsPage = async () => {
       <PageHeader>
         <PageHeaderContent>
           <PageTitle>Pacientes</PageTitle>
-          <PageDescription>Gerencie os pacientes da sua clínica</PageDescription>
+          <PageDescription>
+            Gerencie os pacientes da sua clínica
+          </PageDescription>
         </PageHeaderContent>
         <PageActions>
           <AddPatientButton />
@@ -48,21 +51,7 @@ const PatientsPage = async () => {
       </PageHeader>
 
       <PageContent>
-        {patients.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="text-muted-foreground">
-              <p className="text-lg font-medium">Nenhum paciente encontrado</p>
-              <p className="text-sm">
-                Adicione um paciente para começar a gerenciar sua clínica
-              </p>
-            </div>
-          </div>        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {patients.map((patient) => (
-              <PatientCard key={patient.id} patient={patient} />
-            ))}
-          </div>
-        )}
+        <DataTable columns={patientTableColumns} data={patients} />
       </PageContent>
     </PageContainer>
   );
