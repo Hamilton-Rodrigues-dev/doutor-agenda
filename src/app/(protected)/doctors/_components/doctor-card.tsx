@@ -21,7 +21,7 @@ interface DoctorCardProps{
 
 const DoctorCard = ({ doctor } : DoctorCardProps) => {
   const [isUpsertDialogOpen, setIsUpsertDialogOpen] = useState(false)
-  const doctorInicitals = doctor.name.split("").map((name) => name[0]).join("")
+  const doctorInicitals = doctor.name.split(" ").map((name) => name[0]).join("").toUpperCase()
   
 const availablity = getAvailability(doctor);
 
@@ -44,10 +44,9 @@ const availablity = getAvailability(doctor);
 
       <Separator/>
 
-      <CardContent className="flex flex-col gap-2" >
-        <Badge variant="outline" >
+      <CardContent className="flex flex-col gap-2" >        <Badge variant="outline" >
           <CalendarIcon className="mr-1" />
-        {availablity.from.format("ddddd")} a {availablity.to.format("ddddd")}
+        {availablity.from.format("dddd")} a {availablity.to.format("dddd")}
         </Badge>
         <Badge variant="outline" >
           <ClockIcon className="mr-1" />
@@ -70,6 +69,7 @@ const availablity = getAvailability(doctor);
             availableToTime: availablity.to.format("HH:mm:ss"),
           }}
           onSuccess={() => setIsUpsertDialogOpen(false)}
+          isOpen={isUpsertDialogOpen}
           />
         </Dialog>
       </CardFooter>
