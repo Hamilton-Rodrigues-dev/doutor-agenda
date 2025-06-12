@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TrashIcon } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -9,19 +8,7 @@ import { PatternFormat } from "react-number-format";
 import { toast } from "sonner";
 import z from "zod";
 
-import { deletePatient } from "@/actions/delete-patient";
 import { upsertPatient } from "@/actions/upsert-patient";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DialogContent,
@@ -69,7 +56,11 @@ interface UpsertPatientFormProps {
   onSuccess?: () => void;
 }
 
-const UpsertPatientForm = ({ patient, onSuccess, isOpen }: UpsertPatientFormProps) => {
+const UpsertPatientForm = ({
+  patient,
+  onSuccess,
+  isOpen,
+}: UpsertPatientFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     shouldUnregister: true,
     resolver: zodResolver(formSchema),
@@ -81,12 +72,11 @@ const UpsertPatientForm = ({ patient, onSuccess, isOpen }: UpsertPatientFormProp
     },
   });
 
-useEffect(() => {
-  if (isOpen) {
-    form.reset(patient)
-  }
-}, [isOpen, form,  patient])
-
+  useEffect(() => {
+    if (isOpen) {
+      form.reset(patient);
+    }
+  }, [isOpen, form, patient]);
 
   const upsertPatientAction = useAction(upsertPatient, {
     onSuccess: () => {
@@ -98,20 +88,20 @@ useEffect(() => {
     },
   });
 
-  const deletePatientAction = useAction(deletePatient, {
-    onSuccess: () => {
-      toast.success("Paciente deletado com sucesso!");
-      onSuccess?.();
-    },
-    onError: () => {
-      toast.error("Erro ao deletar paciente");
-    },
-  });
+  // const deletePatientAction = useAction(deletePatient, {
+  //   onSuccess: () => {
+  //     toast.success("Paciente deletado com sucesso!");
+  //     onSuccess?.();
+  //   },
+  //   onError: () => {
+  //     toast.error("Erro ao deletar paciente");
+  //   },
+  // });
 
-  const handleDeletePatientClick = () => {
-    if (!patient) return;
-    deletePatientAction.execute({ id: patient.id });
-  };
+  // const handleDeletePatientClick = () => {
+  //   if (!patient) return;
+  //   deletePatientAction.execute({ id: patient.id });
+  // };
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     upsertPatientAction.execute({
@@ -148,7 +138,6 @@ useEffect(() => {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="email"
@@ -162,7 +151,6 @@ useEffect(() => {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="phoneNumber"
@@ -185,14 +173,16 @@ useEffect(() => {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="sex"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Sexo</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Selecione o sexo" />
@@ -206,40 +196,14 @@ useEffect(() => {
                 <FormMessage />
               </FormItem>
             )}
-          />          <DialogFooter>
-            {patient && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="outline">
-                    <TrashIcon />
-                    Deletar Paciente
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Tem certeza que quer excluir?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Essa ação não pode ser revertida. Isso irá deletar o
-                      paciente e todos os agendamentos relacionados.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDeletePatientClick}>
-                      Deletar
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
+          />
+          <DialogFooter>
             <Button type="submit" disabled={upsertPatientAction.isPending}>
               {upsertPatientAction.isPending
                 ? "Salvando..."
                 : patient
-                ? "Salvar"
-                : "Adicionar"}
+                  ? "Salvar"
+                  : "Adicionar"}
             </Button>
           </DialogFooter>
         </form>
@@ -249,3 +213,31 @@ useEffect(() => {
 };
 
 export default UpsertPatientForm;
+
+// {patient && (
+//   <AlertDialog>
+//     <AlertDialogTrigger asChild>
+//       <Button variant="outline">
+//         <TrashIcon />
+//         Deletar Paciente
+//       </Button>
+//     </AlertDialogTrigger>
+//     <AlertDialogContent>
+//       <AlertDialogHeader>
+//         <AlertDialogTitle>
+//           Tem certeza que quer excluir?
+//         </AlertDialogTitle>
+//         <AlertDialogDescription>
+//           Essa ação não pode ser revertida. Isso irá deletar o
+//           paciente e todos os agendamentos relacionados.
+//         </AlertDialogDescription>
+//       </AlertDialogHeader>
+//       <AlertDialogFooter>
+//         <AlertDialogCancel>Cancelar</AlertDialogCancel>
+//         <AlertDialogAction onClick={handleDeletePatientClick}>
+//           Deletar
+//         </AlertDialogAction>
+//       </AlertDialogFooter>
+//     </AlertDialogContent>
+//   </AlertDialog>
+// )}

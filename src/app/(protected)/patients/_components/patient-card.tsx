@@ -6,7 +6,12 @@ import { useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { patientsTable } from "@/db/schema";
@@ -18,7 +23,8 @@ interface PatientCardProps {
 }
 
 const PatientCard = ({ patient }: PatientCardProps) => {
-  const [isUpsertPatientDialogOpen, setIsUpsertPatientDialogOpen] = useState(false);
+  const [isUpsertPatientDialogOpen, setIsUpsertPatientDialogOpen] =
+    useState(false);
   const patientInitials = patient.name
     .split(" ")
     .map((name) => name[0])
@@ -34,7 +40,7 @@ const PatientCard = ({ patient }: PatientCardProps) => {
           </Avatar>
           <div>
             <h3 className="text-sm font-medium">{patient.name}</h3>
-            <p className="text-sm text-muted-foreground capitalize">
+            <p className="text-muted-foreground text-sm capitalize">
               {patient.sex === "male" ? "Masculino" : "Feminino"}
             </p>
           </div>
@@ -57,7 +63,10 @@ const PatientCard = ({ patient }: PatientCardProps) => {
       <Separator />
 
       <CardFooter>
-        <Dialog open={isUpsertPatientDialogOpen} onOpenChange={setIsUpsertPatientDialogOpen}>
+        <Dialog
+          open={isUpsertPatientDialogOpen}
+          onOpenChange={setIsUpsertPatientDialogOpen}
+        >
           <DialogTrigger asChild>
             <Button className="w-full">Ver detalhes</Button>
           </DialogTrigger>
