@@ -31,7 +31,6 @@ const AppointmentsPage = async () => {
   if (!session?.user.clinic) {
     redirect("/clinic-form");
   }
-
   const [patients, doctors, appointments] = await Promise.all([
     db.query.patientsTable.findMany({
       where: eq(patientsTable.clinicId, session.user.clinic.id),
@@ -45,6 +44,7 @@ const AppointmentsPage = async () => {
         patient: true,
         doctor: true,
       },
+      orderBy: (appointments, { desc }) => [desc(appointments.date)],
     }),
   ]);
 
@@ -60,10 +60,9 @@ const AppointmentsPage = async () => {
         <PageActions>
           <AddAppointmentButton patients={patients} doctors={doctors} />
         </PageActions>
-      </PageHeader>
-
+      </PageHeader>{" "}
       <PageContent>
-        <DataTable data={appointments} columns={appointmentsTableColumns} />
+        <DataTable columns={appointmentsTableColumns} data={appointments} />
       </PageContent>
     </PageContainer>
   );

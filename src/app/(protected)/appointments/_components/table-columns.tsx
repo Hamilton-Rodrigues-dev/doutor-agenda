@@ -6,7 +6,7 @@ import { ptBR } from "date-fns/locale";
 
 import { appointmentsTable } from "@/db/schema";
 
-// import AppointmentsTableActions from "./table-actions";
+import AppointmentTableActions from "./table-actions";
 
 type AppointmentWithRelations = typeof appointmentsTable.$inferSelect & {
   patient: {
@@ -67,11 +67,11 @@ export const appointmentsTableColumns: ColumnDef<AppointmentWithRelations>[] = [
       }).format(price);
     },
   },
-  // {
-  //   id: "actions",
-  //   cell: (params) => {
-  //     const appointment = params.row.original;
-  //     return <AppointmentsTableActions appointment={appointment} />;
-  //   },
-  // },
+  {
+    id: "actions",
+    cell: (params) => {
+      const appointment = params.row.original;
+      return <AppointmentTableActions appointment={appointment} />;
+    },
+  },
 ];
