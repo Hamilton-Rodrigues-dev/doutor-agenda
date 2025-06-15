@@ -1,9 +1,19 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import {
+  PageActions,
+  PageContainer,
+  PageContent,
+  PageDescription,
+  PageHeader,
+  PageHeaderContent,
+  PageTitle,
+} from "@/components/ui/page-container";
 import { auth } from "@/lib/auth";
 
-import SignOutButton from "./components/sign-out-button";
+import { DatePicker } from "./components/date-picker";
+
 const DashboardPage = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -17,13 +27,21 @@ const DashboardPage = async () => {
   }
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <h1>{session?.user.name}</h1>
-      <h1>{session?.user.email}</h1>
+    <PageContainer>
+      <PageHeader>
+        <PageHeaderContent>
+          <PageTitle>Dashboard</PageTitle>
+          <PageDescription>Resumo das informacoes</PageDescription>
+        </PageHeaderContent>
+        <PageActions>
+          <DatePicker />
+        </PageActions>
+      </PageHeader>
 
-      <SignOutButton />
-    </div>
+      <PageContent>
+        <></>
+      </PageContent>
+    </PageContainer>
   );
 };
 
