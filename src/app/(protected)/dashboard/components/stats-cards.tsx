@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrencyInCents } from "@/helpers/currency";
 
 interface StatsCardsProps {
-  totalRevenue: string | null;
+  totalRevenue: number | null;
   totalAppointments: number;
   totalPatients: number;
   totalDoctors: number;
