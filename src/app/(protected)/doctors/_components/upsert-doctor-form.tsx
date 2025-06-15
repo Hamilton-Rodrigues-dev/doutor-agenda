@@ -84,19 +84,25 @@ const formSchema = z
   );
 
 interface UpsertDoctorFormProps {
-  isOpen: boolean
-  doctor?: typeof doctorsTable.$inferSelect
+  isOpen: boolean;
+  doctor?: typeof doctorsTable.$inferSelect;
   onSuccess?: () => void;
 }
 
-const UpsertDoctorForm = ({ doctor, onSuccess, isOpen }: UpsertDoctorFormProps) => {
+const UpsertDoctorForm = ({
+  doctor,
+  onSuccess,
+  isOpen,
+}: UpsertDoctorFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     shouldUnregister: true,
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: doctor?.name ?? "",
       specialty: doctor?.specialty ?? "",
-      appointmentPrice: doctor?.appointmentPriceInCents ? doctor.appointmentPriceInCents /100 : 0,
+      appointmentPrice: doctor?.appointmentPriceInCents
+        ? doctor.appointmentPriceInCents / 100
+        : 0,
       availableFromWeekDay: doctor?.availableFromWeekDay.toString() ?? "1",
       availableToWeekDay: doctor?.availableToWeekDay.toString() ?? "5",
       availableFromTime: doctor?.availableFromTime ?? "",
@@ -104,21 +110,21 @@ const UpsertDoctorForm = ({ doctor, onSuccess, isOpen }: UpsertDoctorFormProps) 
     },
   });
 
-useEffect(() => {
-  if (isOpen) {
-    form.reset({
-      name: doctor?.name ?? "",
-      specialty: doctor?.specialty ?? "",
-      appointmentPrice: doctor?.appointmentPriceInCents ? doctor.appointmentPriceInCents /100 : 0,
-      availableFromWeekDay: doctor?.availableFromWeekDay.toString() ?? "1",
-      availableToWeekDay: doctor?.availableToWeekDay.toString() ?? "5",
-      availableFromTime: doctor?.availableFromTime ?? "",
-      availableToTime: doctor?.availableToTime ?? "",
-    })
-  }
-}, [isOpen, form,  doctor])
-
-
+  useEffect(() => {
+    if (isOpen) {
+      form.reset({
+        name: doctor?.name ?? "",
+        specialty: doctor?.specialty ?? "",
+        appointmentPrice: doctor?.appointmentPriceInCents
+          ? doctor.appointmentPriceInCents / 100
+          : 0,
+        availableFromWeekDay: doctor?.availableFromWeekDay.toString() ?? "1",
+        availableToWeekDay: doctor?.availableToWeekDay.toString() ?? "5",
+        availableFromTime: doctor?.availableFromTime ?? "",
+        availableToTime: doctor?.availableToTime ?? "",
+      });
+    }
+  }, [isOpen, form, doctor]);
 
   const upsertDoctorAction = useAction(upsertDoctor, {
     onSuccess: () => {
@@ -141,11 +147,9 @@ useEffect(() => {
   });
 
   const handleDeleteDoctorClick = () => {
-    if (!doctor) return
-    deleteDoctorAction.execute({id: doctor?.id})
-  }
-
-
+    if (!doctor) return;
+    deleteDoctorAction.execute({ id: doctor?.id });
+  };
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     upsertDoctorAction.execute({
@@ -161,7 +165,11 @@ useEffect(() => {
     <DialogContent>
       <DialogHeader>
         <DialogTitle>{doctor ? doctor.name : "Adicionar médico"} </DialogTitle>
-      <DialogDescription>{doctor ? "Edite as informações desse médico." : "Adicione um novo médico" }</DialogDescription>
+        <DialogDescription>
+          {doctor
+            ? "Edite as informações desse médico."
+            : "Adicione um novo médico"}
+        </DialogDescription>
       </DialogHeader>
 
       <Form {...form}>
@@ -431,8 +439,7 @@ useEffect(() => {
                       <SelectItem value="22:30:00">22:30</SelectItem>
                       <SelectItem value="23:00:00">23:00</SelectItem>
                       <SelectItem value="23:30:00">23:30</SelectItem>
-                    </SelectGroup>git push --force --tags origin main
-
+                    </SelectGroup>
                   </SelectContent>
                 </Select>
               </FormItem>
@@ -441,31 +448,38 @@ useEffect(() => {
 
           <DialogFooter>
             {doctor && (
-               <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="outline">
-          <TrashIcon/>
-          Deletar Médico
-        </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Tem certeza que quer excluir?</AlertDialogTitle>
-          <AlertDialogDescription>
-              Essa ação não pode ser revertida. Isso irá deletar o médico e todas as consultadas agendadas com ele.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDeleteDoctorClick} >
-            Deletar
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline">
+                    <TrashIcon />
+                    Deletar Médico
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Tem certeza que quer excluir?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Essa ação não pode ser revertida. Isso irá deletar o
+                      médico e todas as consultadas agendadas com ele.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDeleteDoctorClick}>
+                      Deletar
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             )}
             <Button type="submit" disabled={upsertDoctorAction.isPending}>
-              {upsertDoctorAction.isPending ? "Salvando..." : doctor ? " Salvar" : "Adicionar"}
+              {upsertDoctorAction.isPending
+                ? "Salvando..."
+                : doctor
+                  ? " Salvar"
+                  : "Adicionar"}
             </Button>
           </DialogFooter>
         </form>
