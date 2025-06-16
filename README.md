@@ -1,3 +1,4 @@
+
 ## Roteiro Aula 01: Setup do Projeto
 
 - [x] Inicialização do projeto Next.js
