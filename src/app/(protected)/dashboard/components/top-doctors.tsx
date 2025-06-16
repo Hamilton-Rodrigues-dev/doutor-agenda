@@ -2,6 +2,7 @@ import { Stethoscope } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils"; // Se você tiver utilitário `cn` para juntar classes
 
 interface TopDoctorsProps {
   doctors: {
@@ -11,11 +12,12 @@ interface TopDoctorsProps {
     specialty: string;
     appointments: number;
   }[];
+  className?: string;
 }
 
-export default function TopDoctors({ doctors }: TopDoctorsProps) {
+export default function TopDoctors({ doctors, className }: TopDoctorsProps) {
   return (
-    <Card className="mx-auto w-full">
+    <Card className={cn("mx-auto w-full", className)}>
       <CardContent>
         <div className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -24,7 +26,7 @@ export default function TopDoctors({ doctors }: TopDoctorsProps) {
           </div>
         </div>
 
-        {/* Doctors List */}
+        {/* Lista de Médicos */}
         <div className="space-y-6">
           {doctors.map((doctor) => (
             <div key={doctor.id} className="flex items-center justify-between">

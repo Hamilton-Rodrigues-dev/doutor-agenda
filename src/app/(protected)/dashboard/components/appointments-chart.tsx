@@ -6,8 +6,6 @@ import dayjs from "dayjs";
 import { DollarSign } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-dayjs.locale("pt-br");
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   type ChartConfig,
@@ -16,6 +14,9 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { formatCurrencyInCents } from "@/helpers/currency";
+import { cn } from "@/lib/utils"; // se usar utilitário cn
+
+dayjs.locale("pt-br");
 
 interface DailyAppointment {
   date: string;
@@ -25,12 +26,13 @@ interface DailyAppointment {
 
 interface AppointmentsChartProps {
   dailyAppointmentsData: DailyAppointment[];
+  className?: string;
 }
 
 const AppointmentsChart = ({
   dailyAppointmentsData,
+  className,
 }: AppointmentsChartProps) => {
-  // Gerar 21 dias: 10 antes + hoje + 10 depois
   const chartDays = Array.from({ length: 21 }).map((_, i) =>
     dayjs()
       .subtract(10 - i, "days")
@@ -38,12 +40,12 @@ const AppointmentsChart = ({
   );
 
   const chartData = chartDays.map((date) => {
-    const dataForDay = dailyAppointmentsData.find((item) => item.date === date);
+    const dayData = dailyAppointmentsData.find((item) => item.date === date);
     return {
       date: dayjs(date).format("DD/MM"),
       fullDate: date,
-      appointments: dataForDay?.appointments || 0,
-      revenue: Number(dataForDay?.revenue || 0),
+      appointments: dayData?.appointments ?? 0,
+      revenue: Number(dayData?.revenue ?? 0),
     };
   });
 
@@ -59,13 +61,13 @@ const AppointmentsChart = ({
   } satisfies ChartConfig;
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center gap-2">
+    <Card className={cn("mx-auto w-full", className)}>
+      <CardHeader className="flex w-full flex-row items-center gap-2">
         <DollarSign />
         <CardTitle>Agendamentos e Faturamento</CardTitle>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className="min-h-[200px]">
+      <CardContent className="p-0">
+        <ChartContainer config={chartConfig} className="smin-h-[200px] w-full">
           <AreaChart
             data={chartData}
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -89,7 +91,7 @@ const AppointmentsChart = ({
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(value) => formatCurrencyInCents(value)}
+              tickFormatter={formatCurrencyInCents}
             />
             <ChartTooltip
               content={
@@ -118,14 +120,13 @@ const AppointmentsChart = ({
                       </>
                     );
                   }}
-                  labelFormatter={(label, payload) => {
-                    if (payload && payload[0]) {
-                      return dayjs(payload[0].payload?.fullDate).format(
-                        "DD/MM/YYYY (dddd)",
-                      );
-                    }
-                    return label;
-                  }}
+                  labelFormatter={(label, payload) =>
+                    payload?.[0]
+                      ? dayjs(payload[0].payload?.fullDate).format(
+                          "DD/MM/YYYY (dddd)",
+                        )
+                      : label
+                  }
                 />
               }
             />

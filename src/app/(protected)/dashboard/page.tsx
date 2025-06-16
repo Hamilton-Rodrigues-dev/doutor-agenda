@@ -97,26 +97,29 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
           totalPatients={totalPatients.total}
           totalDoctors={totalDoctors.total}
         />
-        <div className="grid grid-cols-[2.25fr_1fr] gap-4">
-          <AppointmentsChart dailyAppointmentsData={dailyAppointmentsData} />
-          <TopDoctors doctors={topDoctors} />
+        <div className="flex w-full flex-wrap gap-4 lg:grid lg:flex-none lg:grid-cols-[2.25fr_1fr]">
+          <AppointmentsChart
+            className="w-full"
+            dailyAppointmentsData={dailyAppointmentsData}
+          />
+          <TopDoctors className="w-full" doctors={topDoctors} />
         </div>
-        <div className="grid grid-cols-[2.25fr_1fr] gap-4">
+        <div className="flex w-full flex-wrap gap-4 lg:grid lg:flex-none lg:grid-cols-[2.25fr_1fr]">
           <Card>
             <CardHeader>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <CalendarIcon className="text-muted-foreground" />
                 <CardTitle className="text-base">Agendamento de hoje</CardTitle>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3.5 lg:p-6">
               <DataTable
                 columns={appointmentsTableColumns}
                 data={todayAppointments}
               />
             </CardContent>
           </Card>
-          <TopSpecialties topSpecialties={topSpecialties} />
+          <TopSpecialties className="w-full" topSpecialties={topSpecialties} />
         </div>
       </PageContent>
     </PageContainer>

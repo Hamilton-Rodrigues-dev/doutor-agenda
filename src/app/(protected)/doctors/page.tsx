@@ -48,9 +48,9 @@ const DoctorsPage = async () => {
         </PageActions>
       </PageHeader>
       <PageContent>
-        <div className="grid grid-cols-3 gap-6">
+        <div className="flex w-full flex-wrap gap-6 lg:grid lg:grid-cols-3">
           {doctors.map((doctor) => (
-            <DoctorCard key={doctor.id} doctor={doctor} />
+            <DoctorCard className="w-full" key={doctor.id} doctor={doctor} />
           ))}
         </div>
       </PageContent>

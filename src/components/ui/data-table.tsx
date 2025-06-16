@@ -31,15 +31,25 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const visibleColumnsMobile = ["patient", "doctor", "date"];
+
   return (
-    <div className="rounded-md border">
-      <Table>
+    <div className="w-full overflow-x-auto rounded-md border">
+      <Table className="w-full min-w-[300px] p-0">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
+                const isVisibleOnMobile = visibleColumnsMobile.includes(
+                  header.column.id,
+                );
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    className={
+                      isVisibleOnMobile ? "table-cell" : "hidden md:table-cell"
+                    }
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -59,11 +69,26 @@ export function DataTable<TData, TValue>({
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+                {row.getVisibleCells().map((cell) => {
+                  const isVisibleOnMobile = visibleColumnsMobile.includes(
+                    cell.column.id,
+                  );
+                  return (
+                    <TableCell
+                      key={cell.id}
+                      className={
+                        isVisibleOnMobile
+                          ? "table-cell"
+                          : "hidden md:table-cell"
+                      }
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  );
+                })}
               </TableRow>
             ))
           ) : (
