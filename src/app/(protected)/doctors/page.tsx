@@ -28,11 +28,13 @@ const DoctorsPage = async () => {
   if (!session?.user.clinic) {
     redirect("/clinic-form");
   }
-const doctors = await db.query.doctorsTable.findMany({
-  where: eq(doctorsTable.clinicId, session.user.clinic.id),
-})
+  if (!session.user.plan) {
+    redirect("/new-subscription");
+  }
 
-
+  const doctors = await db.query.doctorsTable.findMany({
+    where: eq(doctorsTable.clinicId, session.user.clinic.id),
+  });
 
   return (
     <PageContainer>
@@ -42,12 +44,14 @@ const doctors = await db.query.doctorsTable.findMany({
           <PageDescription>Gerencie os médicos da sua clínica</PageDescription>
         </PageHeaderContent>
         <PageActions>
-          <AddDoctorButton /> 
+          <AddDoctorButton />
         </PageActions>
       </PageHeader>
       <PageContent>
         <div className="grid grid-cols-3 gap-6">
-            {doctors.map(doctor => <DoctorCard key={doctor.id} doctor={doctor} />)}
+          {doctors.map((doctor) => (
+            <DoctorCard key={doctor.id} doctor={doctor} />
+          ))}
         </div>
       </PageContent>
     </PageContainer>
