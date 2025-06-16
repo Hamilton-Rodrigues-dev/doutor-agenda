@@ -1,6 +1,6 @@
+/* eslint-disable simple-import-sort/imports */
 "use client";
 
-// eslint-disable-next-line simple-import-sort/imports
 import { loadStripe } from "@stripe/stripe-js";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
