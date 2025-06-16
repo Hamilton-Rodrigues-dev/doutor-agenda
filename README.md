@@ -1,8 +1,9 @@
-## Roteiro Aula 03: Gerenciamento de Profissionais e Disponibilidade
-
-- [x] Sidebar e Route Groups
-- [x] Página de médicos
-- [x] Criação de médicos & NextSafeAction
-- [x] Listagem de médicos
-- [x] Atualização de médicos
-- [x] Deleção de médicos
+## Roteiro Aula 05: Dashboard e Forma de pagamento
+- [x] Criação do data picker range
+- [x] Adição dos gráficos na dashboard
+- [x] Adição da tebela de médicos
+- [x] Listagem de Agendamentos diário
+- [x] Tabela de especialidades
+- [x] Criação da pafina de assinaturas
+- [x] Integrar o Stripe
+- [x] Refatorar para cancelar assinatura
