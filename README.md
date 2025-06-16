@@ -1,8 +1,9 @@
-## Roteiro Aula 03: Gerenciamento de Profissionais e Disponibilidade
+## Roteiro Aula 04: Gerenciamento de Pacientes e Agendamentos
 
-- [x] Sidebar e Route Groups
-- [x] Página de médicos
-- [x] Criação de médicos & NextSafeAction
-- [x] Listagem de médicos
-- [x] Atualização de médicos
-- [x] Deleção de médicos
+- [x] Criação de pacientes
+- [x] Edição de pacientes
+- [x] Listagem de pacientes
+- [x] Deleção de pacientes
+- [x] Criação de agendamentos
+- [x] Listagem de agendamentos
+- [x] Deleção de agendamentos
