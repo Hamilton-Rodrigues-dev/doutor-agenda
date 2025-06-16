@@ -12,12 +12,14 @@ import {
 
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils"; // Usa se você tiver utilitário cn
 
 interface TopSpecialtiesProps {
   topSpecialties: {
     specialty: string;
     appointments: number;
   }[];
+  className?: string;
 }
 
 const getSpecialtyIcon = (specialty: string) => {
@@ -44,11 +46,11 @@ const getSpecialtyIcon = (specialty: string) => {
 
 export default function TopSpecialties({
   topSpecialties,
+  className,
 }: TopSpecialtiesProps) {
-  // Validação para garantir que topSpecialties não seja undefined ou vazio
   if (!topSpecialties || topSpecialties.length === 0) {
     return (
-      <Card className="mx-auto w-full">
+      <Card className={cn("mx-auto w-full", className)}>
         <CardContent>
           <div className="mb-8 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -67,8 +69,9 @@ export default function TopSpecialties({
   const maxAppointments = Math.max(
     ...topSpecialties.map((i) => i.appointments),
   );
+
   return (
-    <Card className="mx-auto w-full">
+    <Card className={cn("mx-auto w-full", className)}>
       <CardContent>
         <div className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -77,11 +80,9 @@ export default function TopSpecialties({
           </div>
         </div>
 
-        {/* specialtys List */}
         <div className="space-y-6">
           {topSpecialties.map((specialty) => {
             const Icon = getSpecialtyIcon(specialty.specialty);
-            // Porcentagem de ocupação da especialidade baseando-se no maior número de agendamentos
             const progressValue =
               (specialty.appointments / maxAppointments) * 100;
 
