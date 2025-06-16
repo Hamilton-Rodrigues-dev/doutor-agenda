@@ -5,6 +5,21 @@ import Stripe from "stripe";
 import { db } from "@/db";
 import { usersTable } from "@/db/schema";
 
+interface StripeInvoice {
+  id: string;
+  subscription?: string;
+  customer: string;
+  amount_paid: number;
+  status: string;
+  object: string;
+  billing_reason?: string;
+  lines?: {
+    data?: Array<{
+      subscription?: string;
+    }>;
+  };
+}
+
 export const POST = async (request: Request) => {
   console.log("🚀 [STRIPE-WEBHOOK] Webhook recebido");
 
@@ -90,20 +105,45 @@ export const POST = async (request: Request) => {
         console.log("✅ [STRIPE-WEBHOOK] Usuário atualizado com sucesso");
         break;
       }
+      case "invoice.paid":
+      case "invoice.payment_succeeded": {
+        console.log(`💰 [STRIPE-WEBHOOK] Processando ${event.type}`);
 
-      case "invoice.paid": {
-        console.log("💰 [STRIPE-WEBHOOK] Processando invoice.paid");
+        const invoice = event.data.object as StripeInvoice;
 
-        const invoice = event.data.object as Stripe.Invoice & {
-          subscription?: string;
-        };
+        console.log("📋 [STRIPE-WEBHOOK] Dados completos do invoice:", {
+          id: invoice.id,
+          subscription: invoice.subscription,
+          customer: invoice.customer,
+          amount_paid: invoice.amount_paid,
+          status: invoice.status,
+          object: invoice.object,
+          lines_data_length: invoice.lines?.data?.length,
+          first_line_subscription: invoice.lines?.data?.[0]?.subscription,
+          billing_reason: invoice.billing_reason,
+        });
 
-        // Access subscription property with type assertion if not present in Stripe.Invoice type
-        const subscriptionId = invoice.subscription ?? undefined;
+        // Tentar obter subscription ID de diferentes formas
+        let subscriptionId = invoice.subscription;
+
+        // Se não tiver na propriedade subscription, tentar nas lines do invoice
+        if (!subscriptionId && invoice.lines?.data?.[0]?.subscription) {
+          subscriptionId = invoice.lines.data[0].subscription;
+          console.log(
+            "🔍 [STRIPE-WEBHOOK] Subscription ID encontrado nas lines:",
+            subscriptionId,
+          );
+        }
 
         if (!subscriptionId) {
           console.error(
-            "❌ [STRIPE-WEBHOOK] Subscription ID não encontrado no invoice",
+            "❌ [STRIPE-WEBHOOK] Subscription ID não encontrado no invoice:",
+            {
+              invoiceId: invoice.id,
+              subscription: invoice.subscription,
+              billing_reason: invoice.billing_reason,
+              lines_count: invoice.lines?.data?.length,
+            },
           );
           break;
         }
@@ -128,8 +168,42 @@ export const POST = async (request: Request) => {
           break;
         }
 
+        console.log("👤 [STRIPE-WEBHOOK] Atualizando usuário via invoice:", {
+          userId,
+          subscriptionId: subscription.id,
+          customerId: subscription.customer,
+        });
+
+        await db
+          .update(usersTable)
+          .set({
+            stripeSubscriptionId: subscription.id,
+            stripeCustomerId: subscription.customer as string,
+            plan: "essential",
+          })
+          .where(eq(usersTable.id, userId));
+
         console.log(
-          "👤 [STRIPE-WEBHOOK] Atualizando usuário via invoice.paid:",
+          "✅ [STRIPE-WEBHOOK] Usuário atualizado com sucesso via invoice",
+        );
+        break;
+      }
+
+      case "customer.subscription.created": {
+        console.log("🆕 [STRIPE-WEBHOOK] Processando subscription.created");
+
+        const subscription = event.data.object as Stripe.Subscription;
+
+        const userId = subscription.metadata?.userId;
+        if (!userId) {
+          console.error(
+            "❌ [STRIPE-WEBHOOK] User ID not found in subscription metadata",
+          );
+          break;
+        }
+
+        console.log(
+          "👤 [STRIPE-WEBHOOK] Atualizando usuário via subscription.created:",
           {
             userId,
             subscriptionId: subscription.id,
@@ -147,7 +221,7 @@ export const POST = async (request: Request) => {
           .where(eq(usersTable.id, userId));
 
         console.log(
-          "✅ [STRIPE-WEBHOOK] Usuário atualizado com sucesso via invoice.paid",
+          "✅ [STRIPE-WEBHOOK] Usuário atualizado via subscription.created",
         );
         break;
       }
