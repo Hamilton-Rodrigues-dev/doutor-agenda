@@ -254,6 +254,45 @@ export const POST = async (request: Request) => {
         break;
       }
 
+      case "customer.created": {
+        console.log("🆕 [STRIPE-WEBHOOK] Processando customer.created");
+
+        const customer = event.data.object as Stripe.Customer;
+
+        console.log("📋 [STRIPE-WEBHOOK] Dados do cliente:", {
+          id: customer.id,
+          email: customer.email,
+          name: customer.name,
+          created: new Date(customer.created * 1000).toISOString(),
+          metadata: customer.metadata,
+        });
+
+        const userId = customer.metadata?.userId;
+
+        if (userId) {
+          console.log(
+            `👤 [STRIPE-WEBHOOK] Atualizando usuário ${userId} com stripeCustomerId`,
+          );
+
+          await db
+            .update(usersTable)
+            .set({
+              stripeCustomerId: customer.id,
+            })
+            .where(eq(usersTable.id, userId));
+
+          console.log(
+            "✅ [STRIPE-WEBHOOK] Usuário atualizado com stripeCustomerId",
+          );
+        } else {
+          console.log(
+            "ℹ️ [STRIPE-WEBHOOK] Nenhum userId encontrado no metadata do cliente Stripe, nenhum usuário atualizado",
+          );
+        }
+
+        break;
+      }
+
       default:
         console.log("ℹ️ [STRIPE-WEBHOOK] Evento não tratado:", event.type);
     }
@@ -263,4 +302,9 @@ export const POST = async (request: Request) => {
     console.error("❌ [STRIPE-WEBHOOK] Erro:", error);
     return NextResponse.json({ error: "Webhook error" }, { status: 400 });
   }
+};
+export const config = {
+  api: {
+    bodyParser: false,
+  },
 };
