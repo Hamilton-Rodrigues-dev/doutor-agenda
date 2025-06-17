@@ -28,20 +28,34 @@ export const POST = async (request: Request) => {
     throw new Error("Stripe secret key not found");
   }
 
+  // const signature = request.headers.get("stripe-signature");
+  // if (!signature) {
+  //   console.error("❌ [STRIPE-WEBHOOK] Assinatura não encontrada");
+  //   throw new Error("Stripe signature not found");
+  // }
+
+  // // const text = await request.text();
+  // const body = await request.arrayBuffer();
+
+  // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  //   apiVersion: "2025-05-28.basil",
+  // });
   const signature = request.headers.get("stripe-signature");
   if (!signature) {
     console.error("❌ [STRIPE-WEBHOOK] Assinatura não encontrada");
     throw new Error("Stripe signature not found");
   }
 
-  const text = await request.text();
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  // ❗️ Aqui a troca: use arrayBuffer ao invés de text
+  const rawBody = await request.arrayBuffer();
+  const buffer = Buffer.from(rawBody); // necessário para Stripe
+
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: "2025-05-28.basil",
   });
-
   try {
     const event = stripe.webhooks.constructEvent(
-      text,
+      buffer,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET,
     );
@@ -302,9 +316,4 @@ export const POST = async (request: Request) => {
     console.error("❌ [STRIPE-WEBHOOK] Erro:", error);
     return NextResponse.json({ error: "Webhook error" }, { status: 400 });
   }
-};
-export const config = {
-  api: {
-    bodyParser: false,
-  },
 };
