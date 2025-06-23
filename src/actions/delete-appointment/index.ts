@@ -8,9 +8,9 @@ import z from "zod";
 import { db } from "@/db";
 import { appointmentsTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
-import { actionClient } from "@/lib/next-safe-action";
+import { protectedWithClinicActionClient } from "@/lib/next-safe-action";
 
-export const deleteAppointment = actionClient
+export const deleteAppointment = protectedWithClinicActionClient
   .schema(
     z.object({
       id: z.string().uuid(),

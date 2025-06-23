@@ -1,29 +1,19 @@
 "use server";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/dist/server/web/spec-extension/revalidate";
-import { headers } from "next/headers";
 import z from "zod";
 
 import { db } from "@/db";
 import { doctorsTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
-import { actionClient } from "@/lib/next-safe-action";
+import { protectedWithClinicActionClient } from "@/lib/next-safe-action";
 
-export const deleteDoctor = actionClient
+export const deleteDoctor = protectedWithClinicActionClient
   .schema(
     z.object({
       id: z.string().uuid(),
     }),
   )
   .action(async ({ parsedInput }) => {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user) {
-      throw new Error("Unauthorized");
-    }
-
     const doctor = await db.query.doctorsTable.findFirst({
       where: eq(doctorsTable.id, parsedInput.id),
     });
