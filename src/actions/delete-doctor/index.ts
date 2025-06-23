@@ -13,7 +13,7 @@ export const deleteDoctor = protectedWithClinicActionClient
       id: z.string().uuid(),
     }),
   )
-  .action(async ({ parsedInput }) => {
+  .action(async ({ parsedInput, ctx }) => {
     const doctor = await db.query.doctorsTable.findFirst({
       where: eq(doctorsTable.id, parsedInput.id),
     });
@@ -22,7 +22,7 @@ export const deleteDoctor = protectedWithClinicActionClient
       throw new Error("Médico não encontrado");
     }
 
-    if (doctor.clinicId !== session.user.clinic?.id) {
+    if (doctor.clinicId !== ctx.user.clinic?.id) {
       throw new Error("Você não tem permissão para excluir este médico");
     }
 
